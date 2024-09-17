@@ -1,5 +1,5 @@
 {
-  description = "A collection of flake templates";
+  description = "A template for a simple Python dev environment";
 
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
@@ -21,18 +21,12 @@
       perSystem = {pkgs, ...}: {
         formatter = pkgs.alejandra;
         devshells.default = {
-          packages = with pkgs; [nil];
-        };
-      };
-
-      flake.templates = {
-        gleam = {
-          path = ./gleam;
-          description = "A simple Gleam template";
-        };
-        python = {
-          path = ./python;
-          description = "A simple Python template";
+          packages = [
+            pkgs.nil
+            (pkgs.python3.withPackages (pyPkgs: [
+              # Add your python packages here
+            ]))
+          ];
         };
       };
     };
