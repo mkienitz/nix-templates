@@ -34,6 +34,10 @@
           path = ./python;
           description = "A simple Python template";
         };
+        rust = {
+          path = ./rust;
+          description = "A simple Rust template";
+        };
       };
     };
 }
