@@ -1,5 +1,5 @@
 {
-  description = "A template for a simple Python dev environment";
+  description = "A minimal rust development flake";
 
   inputs = {
     devshell = {
@@ -38,12 +38,7 @@
         { pkgs, config, ... }:
         {
           devshells.default = {
-            packages = [
-              pkgs.nil
-              (pkgs.python3.withPackages (_pyPkgs: [
-                # Add your python packages here
-              ]))
-            ];
+            packages = [ pkgs.nil ];
             devshell.startup.pre-commit.text = config.pre-commit.installationScript;
           };
 
@@ -55,7 +50,6 @@
               deadnix.enable = true;
               statix.enable = true;
               nixfmt.enable = true;
-              ruff.enable = true;
             };
           };
         };

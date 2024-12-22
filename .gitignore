@@ -1,2 +1,3 @@
 /**/flake.lock
 !/flake.lock
+.pre-commit-config.yaml
