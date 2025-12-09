@@ -1,5 +1,5 @@
 {
-  description = "A minimal rust development flake";
+  description = "A minimal flake";
 
   inputs = {
     devshell = {
