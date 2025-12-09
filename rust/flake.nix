@@ -46,9 +46,8 @@
           ...
         }:
         let
-          crateName = "my_crate";
+          crateName = "my-crate";
           projectName = crateName;
-          crateOutput = config.nci.outputs.${crateName};
         in
         {
           devshells.default = {
@@ -67,8 +66,16 @@
               deadnix.enable = true;
               statix.enable = true;
               nixfmt.enable = true;
-              rustfmt.enable = true;
+              rustfmt =
+                let
+                  toml = builtins.fromTOML (builtins.readFile ./Cargo.toml);
+                in
+                {
+                  enable = true;
+                  inherit (toml.workspace.package) edition;
+                };
             };
+            taplo.enable = true;
           };
 
           nci = {
@@ -79,7 +86,7 @@
             crates.${crateName} = { };
           };
 
-          packages.default = crateOutput.packages.release;
+          packages.default = config.nci.${crateName}.packages.release;
         };
     };
 }
