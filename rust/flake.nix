@@ -53,7 +53,6 @@
           devshells.default = {
             packages = [
               pkgs.nil
-              pkgs.rust-analyzer
             ];
             devshell.startup.pre-commit.text = config.pre-commit.installationScript;
           };
