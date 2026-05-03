@@ -65,6 +65,7 @@
               deadnix.enable = true;
               statix.enable = true;
               nixfmt.enable = true;
+              taplo.enable = true;
               rustfmt =
                 let
                   toml = builtins.fromTOML (builtins.readFile ./Cargo.toml);
@@ -72,9 +73,10 @@
                 {
                   enable = true;
                   inherit (toml.workspace.package) edition;
+                  # If not using workspaces:
+                  # inherit (toml.package) edition;
                 };
             };
-            taplo.enable = true;
           };
 
           nci = {
