@@ -43,6 +43,7 @@
         {
           pkgs,
           config,
+          lib,
           ...
         }:
         let
@@ -53,8 +54,27 @@
           devshells.default = {
             packages = [
               pkgs.nil
-            ];
+            ]
+            ++ (lib.optionals pkgs.stdenv.isDarwin [
+              pkgs.liconv
+            ]);
+
             devshell.startup.pre-commit.text = config.pre-commit.installationScript;
+
+            env = [
+              # For classic target/release/ paths
+              {
+                name = "CARGO_BUILD_TARGET";
+                unset = true;
+              }
+            ]
+            ++ (lib.optionals pkgs.stdenv.isDarwin [
+              {
+                # On darwin for example enables finding of libiconv
+                name = "LIBRARY_PATH";
+                eval = "$DEVSHELL_DIR/lib";
+              }
+            ]);
           };
 
           pre-commit.settings.hooks.treefmt.enable = true;
@@ -72,9 +92,9 @@
                 in
                 {
                   enable = true;
-                  inherit (toml.workspace.package) edition;
-                  # If not using workspaces:
-                  # inherit (toml.package) edition;
+                  # If using workspaces:
+                  # inherit (toml.workspace.package) edition;
+                  inherit (toml.package) edition;
                 };
             };
           };
@@ -87,7 +107,7 @@
             crates.${crateName} = { };
           };
 
-          packages.default = config.nci.${crateName}.packages.release;
+          packages.default = config.nci.outputs.${crateName}.packages.release;
         };
     };
 }
