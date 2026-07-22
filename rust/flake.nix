@@ -55,7 +55,7 @@
               pkgs.nil
             ]
             ++ (lib.optionals pkgs.stdenv.isDarwin [
-              pkgs.liconv
+              pkgs.libiconv
             ]);
 
             devshell.startup.pre-commit.text = config.pre-commit.installationScript;
