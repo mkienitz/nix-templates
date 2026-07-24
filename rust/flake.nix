@@ -46,8 +46,13 @@
           ...
         }:
         let
-          crateName = "my-crate";
-          projectName = crateName;
+          # Read Cargo.toml to derive crate names etc.
+          toml = builtins.fromTOML (builtins.readFile ./Cargo.toml);
+
+          # For simple crate
+          crateNames = [ toml.package.name ];
+          # For workspace
+          # crateNames = toml.workspace.members
         in
         {
           devshells.default = {
@@ -85,28 +90,23 @@
               statix.enable = true;
               nixfmt.enable = true;
               taplo.enable = true;
-              rustfmt =
-                let
-                  toml = builtins.fromTOML (builtins.readFile ./Cargo.toml);
-                in
-                {
-                  enable = true;
-                  # If using workspaces:
-                  # inherit (toml.workspace.package) edition;
-                  inherit (toml.package) edition;
-                };
+              rustfmt = {
+                enable = true;
+                # For simple crate
+                inherit (toml.package) edition;
+                # For workspaces
+                # inherit (toml.workspace.package) edition;
+              };
             };
           };
 
           nci = {
-            projects.${projectName} = {
+            projects."A rust project" = {
               path = ./.;
               numtideDevshell = "default";
             };
-            crates.${crateName} = { };
+            crates = lib.genAttrs crateNames (_: { });
           };
-
-          packages.default = config.nci.outputs.${crateName}.packages.release;
         };
     };
 }
